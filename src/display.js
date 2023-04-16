@@ -77,8 +77,8 @@ ${helpers.img(coverImage, url, title, "", "400px")}
 			case "blog-left":
 			case "blog-right":
 				let align = "blog-left" === STYLE ? "left" : "right";
-				markdown.push(`<p align="left">
-${helpers.img(coverImage, url, title, align, "250px")}
+				markdown.push(`<p>
+${helpers.img(coverImage, url, title, align, "150px")}
 ${helpers.a(url, title, `<strong>${title}</strong>`)}
 <div><strong>${helpers.parseDate(dateAdded)}</strong>${
 					dateUpdated === null
@@ -86,8 +86,7 @@ ${helpers.a(url, title, `<strong>${title}</strong>`)}
 						: ` | <strong>Updated: ${helpers.parseDate(
 								dateUpdated
 						  )}</strong>`
-				}</div>
-<br/> ${brief} </p> <br/> <br/>`);
+				}</div></p>`);
 				if (isalternate) {
 					STYLE = "blog-left" === STYLE ? "blog-right" : "blog-left";
 				}
