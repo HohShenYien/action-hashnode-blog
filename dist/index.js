@@ -3080,8 +3080,8 @@ ${helpers.img(coverImage, url, title, "", "400px")}
 			case "blog-left":
 			case "blog-right":
 				let align = "blog-left" === STYLE ? "left" : "right";
-				markdown.push(`<p align="left">
-${helpers.img(coverImage, url, title, align, "250px")}
+				markdown.push(`<p>
+${helpers.img(coverImage, url, title, align, "150px")}
 ${helpers.a(url, title, `<strong>${title}</strong>`)}
 <div><strong>${helpers.parseDate(dateAdded)}</strong>${
 					dateUpdated === null
@@ -3089,8 +3089,7 @@ ${helpers.a(url, title, `<strong>${title}</strong>`)}
 						: ` | <strong>Updated: ${helpers.parseDate(
 								dateUpdated
 						  )}</strong>`
-				}</div>
-<br/> ${brief} </p> <br/> <br/>`);
+				}</div></p>`);
 				if (isalternate) {
 					STYLE = "blog-left" === STYLE ? "blog-right" : "blog-left";
 				}
@@ -3156,80 +3155,84 @@ module.exports = {
 /***/ 351:
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-const query       = __webpack_require__( 408 );
-const render      = __webpack_require__( 135 );
-const core        = __webpack_require__( 186 );
-const fs          = __webpack_require__( 747 );
-const commitFile  = __webpack_require__( 689 );
-const { GistBox } = __webpack_require__( 607 );
+const query = __webpack_require__(408);
+const render = __webpack_require__(135);
+const core = __webpack_require__(186);
+const fs = __webpack_require__(747);
+const commitFile = __webpack_require__(689);
+const { GistBox } = __webpack_require__(607);
 
 // most @actions toolkit packages have async methods
 async function run() {
 	try {
-		const TYPE     = core.getInput( 'TYPE' );
-		const FILE     = core.getInput( 'FILE' );
-		const USERNAME = core.getInput( 'USERNAME' );
-		const STYLE    = core.getInput( 'STYLE' );
-		const COUNT    = core.getInput( 'COUNT' );
-		const BLOG_URL = core.getInput( 'BLOG_URL' );
+		const TYPE = core.getInput("TYPE");
+		const FILE = core.getInput("FILE");
+		const USERNAME = core.getInput("USERNAME");
+		const STYLE = core.getInput("STYLE");
+		const COUNT = core.getInput("COUNT");
+		const BLOG_URL = core.getInput("BLOG_URL");
 
-		core.startGroup( 'Parsed Config' );
-		core.info( `Type                     = ${TYPE}` );
-		core.info( `File / Gist ID           = ${FILE}` );
-		core.info( `Hashnode Username        = ${USERNAME}` );
-		core.info( `Output Style             = ${STYLE}` );
-		core.info( `No Of Posts To Display   = ${COUNT}` );
+		core.startGroup("Parsed Config");
+		core.info(`Type                     = ${TYPE}`);
+		core.info(`File / Gist ID           = ${FILE}`);
+		core.info(`Hashnode Username        = ${USERNAME}`);
+		core.info(`Output Style             = ${STYLE}`);
+		core.info(`No Of Posts To Display   = ${COUNT}`);
+		core.info("Using Shen Yien's customized version");
 		core.endGroup();
 
+		const results = await query(USERNAME.toLowerCase(), COUNT, BLOG_URL);
+		let output = "";
 
-		const results = await query( USERNAME.toLowerCase(), COUNT, BLOG_URL );
-		let output    = '';
-
-		core.startGroup( 'Latest Posts' );
-		core.info( JSON.stringify( results, null, 2 ) );
+		core.startGroup("Latest Posts");
+		core.info(JSON.stringify(results, null, 2));
 		core.endGroup();
-		core.info( ' ' );
+		core.info(" ");
 
-		if( 'gist' === TYPE.toLowerCase() ) {
-			if( STYLE.toLowerCase().startsWith( 'list' ) ) {
-				output = await render.list( results, STYLE );
+		if ("gist" === TYPE.toLowerCase()) {
+			if (STYLE.toLowerCase().startsWith("list")) {
+				output = await render.list(results, STYLE);
 			} else {
-				output = await render.list( results, 'list' );
+				output = await render.list(results, "list");
 			}
 
-			let list_data = await render.list( results, 'list-gist' );
-			const box     = new GistBox( { id: FILE, token: process.env.GITHUB_TOKEN } );
+			let list_data = await render.list(results, "list-gist");
+			const box = new GistBox({
+				id: FILE,
+				token: process.env.GITHUB_TOKEN,
+			});
 
-			await box.update( {
-				filename: 'blog.md',
-				description: 'My Latest Blogs 👇',
-				content: list_data + '\n\n' + output
-			} );
+			await box.update({
+				filename: "blog.md",
+				description: "My Latest Blogs 👇",
+				content: list_data + "\n\n" + output,
+			});
 		} else {
-			const file_path    = `${process.env.GITHUB_WORKSPACE}/${FILE}`;
-			const file_content = fs.readFileSync( file_path );
+			const file_path = `${process.env.GITHUB_WORKSPACE}/${FILE}`;
+			const file_content = fs.readFileSync(file_path);
 
-			if( STYLE.toLowerCase().startsWith( 'list' ) ) {
-				output = await render.list( results, STYLE );
-			} else if( STYLE.toLowerCase().startsWith( 'blog' ) ) {
-				output = await render.blog( results, STYLE );
+			if (STYLE.toLowerCase().startsWith("list")) {
+				output = await render.list(results, STYLE);
+			} else if (STYLE.toLowerCase().startsWith("blog")) {
+				output = await render.blog(results, STYLE);
 			}
 
+			const regex =
+				/^(<!--(?:\s|)HASHNODE_BLOG:(?:START|start)(?:\s|)-->)(?:\n|)([\s\S]*?)(?:\n|)(<!--(?:\s|)HASHNODE_BLOG:(?:END|end)(?:\s|)-->)$/gm;
+			const result = file_content
+				.toString()
+				.replace(regex, `$1\n${output}\n$3`);
 
-			const regex  = /^(<!--(?:\s|)HASHNODE_BLOG:(?:START|start)(?:\s|)-->)(?:\n|)([\s\S]*?)(?:\n|)(<!--(?:\s|)HASHNODE_BLOG:(?:END|end)(?:\s|)-->)$/gm;
-			const result = file_content.toString().replace( regex, `$1\n${output}\n$3` );
+			fs.writeFileSync(file_path, result);
 
-			fs.writeFileSync( file_path, result );
-
-			await commitFile().catch( err => {
-				core.error( err );
-				core.info( err.stack );
-				process.exit( err.code || -1 );
-			} );
+			await commitFile().catch((err) => {
+				core.error(err);
+				core.info(err.stack);
+				process.exit(err.code || -1);
+			});
 		}
-
-	} catch( error ) {
-		core.setFailed( error.message );
+	} catch (error) {
+		core.setFailed(error.message);
 	}
 }
 
