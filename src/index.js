@@ -21,9 +21,8 @@ async function run() {
 		core.info(`Hashnode Username        = ${USERNAME}`);
 		core.info(`Output Style             = ${STYLE}`);
 		core.info(`No Of Posts To Display   = ${COUNT}`);
-		core.endGroup();
-
 		core.info("Using Shen Yien's customized version");
+		core.endGroup();
 
 		const results = await query(USERNAME.toLowerCase(), COUNT, BLOG_URL);
 		let output = "";
