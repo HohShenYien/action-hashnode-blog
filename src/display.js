@@ -80,13 +80,13 @@ ${helpers.img(coverImage, url, title, "", "400px")}
 				markdown.push(`<p>
 ${helpers.img(coverImage, url, title, align, "150px")}
 ${helpers.a(url, title, `<strong>${title}</strong>`)}
-<div><strong>${helpers.parseDate(dateAdded)}</strong>${
+<br><strong>${helpers.parseDate(dateAdded)}</strong>${
 					dateUpdated === null
 						? ""
 						: ` | <strong>Updated: ${helpers.parseDate(
 								dateUpdated
 						  )}</strong>`
-				}</div></p>`);
+				}</p><br>`);
 				if (isalternate) {
 					STYLE = "blog-left" === STYLE ? "blog-right" : "blog-left";
 				}
