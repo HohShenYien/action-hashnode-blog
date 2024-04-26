@@ -24,8 +24,8 @@ async function run() {
 		core.info(`Hashnode Username        = ${USERNAME}`);
 		core.info(`Output Style             = ${STYLE}`);
 		core.info(`No Of Posts To Display   = ${COUNT}`);
-		core.info(`Use canonical URL		= ${USE_CANONICAL_URL}`);
-		core.info(`Use Custom Blog URL		= ${USE_CUSTOM_BLOG_URL}`);
+		core.info(`Use canonical URL        = ${USE_CANONICAL_URL}`);
+		core.info(`Use Custom Blog URL      = ${USE_CUSTOM_BLOG_URL}`);
 		core.info(`Blog URL                 = ${BLOG_URL}`);
 		core.info("Using Shen Yien's customized version");
 		core.endGroup();
