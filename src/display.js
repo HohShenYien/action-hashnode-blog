@@ -13,7 +13,7 @@ function blog_table(posts, style) {
 			html += "</tr><tr>";
 		}
 
-		html += `<td>${helpers.img(coverImage, url, title, "", "")}
+		html += `<td>${helpers.img(coverImage.url, url, title, "", "")}
 ${helpers.a(url, title, `<strong>${title}</strong>`)}
 <div><strong>${helpers.parseDate(dateAdded)}</strong>${
 			dateUpdated === null
@@ -64,7 +64,7 @@ async function blog(posts, STYLE) {
 		switch (STYLE) {
 			case "blog":
 				markdown.push(`<h3>${helpers.a(url, title, title)}</h3>
-${helpers.img(coverImage, url, title, "", "400px")}
+${helpers.img(coverImage.url, url, title, "", "400px")}
 <div><strong>${helpers.parseDate(dateAdded)}</strong>${
 					dateUpdated === null
 						? ""
@@ -78,7 +78,7 @@ ${helpers.img(coverImage, url, title, "", "400px")}
 			case "blog-right":
 				let align = "blog-left" === STYLE ? "left" : "right";
 				markdown.push(`<p>
-${helpers.img(coverImage, url, title, align, "150px")}
+${helpers.img(coverImage.url, url, title, align, "150px")}
 ${helpers.a(url, title, `<strong>${title}</strong>`)}
 <br><strong>${helpers.parseDate(dateAdded)}</strong></p><br>`);
 				if (isalternate) {

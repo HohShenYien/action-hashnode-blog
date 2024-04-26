@@ -14,6 +14,9 @@ async function run() {
 		const STYLE = core.getInput("STYLE");
 		const COUNT = core.getInput("COUNT");
 		const BLOG_URL = core.getInput("BLOG_URL");
+		const USE_CANONICAL_URL = core.getInput("USE_CANONICAL_URL") ?? "false";
+		const USE_CUSTOM_BLOG_URL =
+			core.getInput("USE_CUSTOM_BLOG_URL") ?? "false";
 
 		core.startGroup("Parsed Config");
 		core.info(`Type                     = ${TYPE}`);
@@ -21,10 +24,19 @@ async function run() {
 		core.info(`Hashnode Username        = ${USERNAME}`);
 		core.info(`Output Style             = ${STYLE}`);
 		core.info(`No Of Posts To Display   = ${COUNT}`);
+		core.info(`Use canonical URL		= ${USE_CANONICAL_URL}`);
+		core.info(`Use Custom Blog URL		= ${USE_CUSTOM_BLOG_URL}`);
+		core.info(`Blog URL                 = ${BLOG_URL}`);
 		core.info("Using Shen Yien's customized version");
 		core.endGroup();
 
-		const results = await query(USERNAME.toLowerCase(), COUNT, BLOG_URL);
+		const results = await query(
+			USERNAME.toLowerCase(),
+			COUNT,
+			BLOG_URL,
+			USE_CANONICAL_URL.toLowerCase() === "true",
+			USE_CUSTOM_BLOG_URL.toLowerCase() === "true"
+		);
 		let output = "";
 
 		core.startGroup("Latest Posts");
@@ -32,7 +44,7 @@ async function run() {
 		core.endGroup();
 		core.info(" ");
 
-		if ("gist" === TYPE.toLowerCase()) {
+		if (TYPE.toLowerCase() === "gist") {
 			if (STYLE.toLowerCase().startsWith("list")) {
 				output = await render.list(results, STYLE);
 			} else {

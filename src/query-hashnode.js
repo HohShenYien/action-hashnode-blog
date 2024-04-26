@@ -1,65 +1,63 @@
-const fetch           = require( "node-fetch" );
-const helpers         = require( './helpers' );
-const API_URL         = 'https://api.hashnode.com',
-	  DEFAULT_HEADERS = {
-		  'Content-type': 'application/json',
-	  };
+const fetch = require("node-fetch");
+const helpers = require("./helpers");
+const API_URL = "https://gql.hashnode.com/",
+	DEFAULT_HEADERS = {
+		"Content-type": "application/json",
+	};
 
-async function query_api( username = false, pageno = 1 ) {
-	const query       = `
-{
-  user(username: "${username}"){
-    publication{
-      posts(page:${pageno}) {
-        slug
-        title
-        cuid
-        brief
-        coverImage
-		dateUpdated
-        dateAdded
-      }
-    }
-  }
+async function query_api(username = false, pageSize = 6) {
+	const query = `
+query {
+	user(username: "${username}"){
+		posts(page:1, pageSize: ${pageSize}) {
+			nodes {
+				title
+				canonicalUrl
+				slug
+				url
+				cuid
+				brief
+				coverImage {
+					url
+				}
+				updatedAt
+				publishedAt
+			}
+		}
+	}
 }
 `;
-	const result      = await fetch( API_URL, {
-		method: 'POST',
+	const result = await fetch(API_URL, {
+		method: "POST",
 		headers: DEFAULT_HEADERS,
-		body: JSON.stringify( { query } ),
-	} );
+		body: JSON.stringify({ query }),
+	});
 	const ApiResponse = await result.json();
 
-	if( 0 === ApiResponse.data.user.publication.posts.length ) {
+	if (0 === ApiResponse.data.user.posts.nodes.length) {
 		return false;
 	}
 
-	return ApiResponse.data.user.publication.posts;
+	return ApiResponse.data.user.posts.nodes;
 }
 
-module.exports = async function( username, limit = 6, BLOG_URL = false ) {
-	let loop_status = true,
-		posts       = [],
-		i           = 0;
-	while( loop_status ) {
-		let results = await query_api( username, i++ );
-
-		if( false === results ) {
-			loop_status = false;
-		} else {
-			results.forEach( ( post ) => {
-				if( posts.length >= limit ) {
-					loop_status = false;
-				} else {
-					post.url = helpers.post_link( post, username, BLOG_URL );
-					posts.push( post );
-				}
-			} );
-		}
-
-		if( posts.length >= limit ) {
-			loop_status = false;
-		}
-	}
+module.exports = async function (
+	username,
+	limit = 6,
+	BLOG_URL = false,
+	USE_CANONICAL_URL = false,
+	USE_CUSTOM_BLOG_URL = false
+) {
+	let posts = [];
+	let results = await query_api(username, limit);
+	results.forEach((post) => {
+		post.url = helpers.post_link(
+			post,
+			USE_CUSTOM_BLOG_URL,
+			USE_CANONICAL_URL,
+			BLOG_URL
+		);
+		posts.push(post);
+	});
 	return posts;
 };
