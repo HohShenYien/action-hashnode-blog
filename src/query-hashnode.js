@@ -33,6 +33,7 @@ query {
 		body: JSON.stringify({ query }),
 	});
 	const ApiResponse = await result.json();
+	console.log(ApiResponse);
 
 	if (0 === ApiResponse.data.user.posts.nodes.length) {
 		return false;
