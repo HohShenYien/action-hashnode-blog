@@ -1,9 +1,9 @@
 {
 	"name": "action-hashnode-blog",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": " Fetch & Display Your Hashnode blog posts. ",
 	"engines": {
-		"node": "18.17.0"
+		"node": "20.12.2"
 	},
 	"scripts": {
 		"prepare": "ncc build ./src/index.js -o dist --source-map --license licenses.txt"

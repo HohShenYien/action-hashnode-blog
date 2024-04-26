@@ -26,11 +26,19 @@ inputs:
     description: "No of Latest Post To Show"
     default: "6"
     required: false
+  USE_CANONICAL_URL:
+    description: "Use Canonical URL instead of the default hashnode url"
+    default: "false"
+    required: false
+  USE_CUSTOM_BLOG_URL:
+    description: "Use Custom Blog URL instead of the default hashnode blog url"
+    default: "false"
+    required: false
 
 branding:
   icon: 'book-open'
   color: 'blue'
 
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'

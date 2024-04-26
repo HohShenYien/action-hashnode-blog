@@ -7,6 +7,8 @@
 <h1 align="center">Hashnode Blogs - <i>Github Action</i></h1>
 <p align="center">~ Fetch & Display Your Latest Blog Posts From <a href="https://hashnode.com/"><strong>Hashnode</strong></a> ~</p>
 
+This is a forked version by [Shen Yien](https://github.com/HohShenYien) with some customizations as Hashnode has made changes to its API.
+
 ## ⚙️ Configuration
 | Option | Description | Default |
 | :---: | :---: | :---: |
@@ -16,9 +18,11 @@
 | `BLOG_URL` | Your blog url. you can leave it empty to auto generate. but if you are facing any issue with auto generated link. make sure to provide your blog url here. | - |
 | `STYLE` | Options :  `list`, `list-ordered`, `blog`, `blog-right`, `blog-left`, `blog-alternate`, `blog-grid` | `list` |
 | `COUNT` | No of latest posts to display | `6` |
+| `USE_CANONICAL_URL` | Use Canonical URL instead of the default hashnode url. Options: `"true"` or `"false"`. This is customized for me to use as I have a separate blog website built using Next.js | `false` |
+| `USE_CUSTOM_BLOG_URL` | Use Custom Blog URL instead of the default hashnode blog url. Options: `"true"` or `"false"`. If `true`, the URL will be using the format of `${BLOG_URL}/${post.slug}` | `false` |
 
 ---
-### Please check the [Demo Repository](https://github.com/varunsridharan/demo-action-hashnode-blog) to preview all possible **Styles**
+### Please check the [Demo Repository](https://github.com/varunsridharan/demo-action-hashnode-blog) to preview all possible **Styles** or [Shen Yien's Profile](https://github.com/HohShenYien/HohShenYien)  to view the latest usage
 ---
 
 ## 🚀 Usage
