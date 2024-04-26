@@ -31,11 +31,11 @@ async function run() {
 		core.endGroup();
 
 		const results = await query(
-			USERNAME.toLowerCase(),
+			USERNAME,
 			COUNT,
 			BLOG_URL,
 			USE_CANONICAL_URL.toLowerCase() === "true",
-			USE_CUSTOM_BLOG_URL.toLowerCase() === "true"
+			USE_CUSTOM_BLOG_URL.toLowerCase === "true"
 		);
 		let output = "";
 

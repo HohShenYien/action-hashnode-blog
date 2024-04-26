@@ -1,6 +1,6 @@
 {
 	"name": "action-hashnode-blog",
-	"version": "1.0.1",
+	"version": "1.0.0",
 	"description": " Fetch & Display Your Hashnode blog posts. ",
 	"engines": {
 		"node": "20.12.2"

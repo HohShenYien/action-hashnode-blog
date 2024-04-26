@@ -33,10 +33,12 @@ query {
 		body: JSON.stringify({ query }),
 	});
 	const ApiResponse = await result.json();
-	console.log(ApiResponse);
+	if (ApiResponse.data.user === null) {
+		throw new Error("User not found");
+	}
 
-	if (0 === ApiResponse.data.user.posts.nodes.length) {
-		return false;
+	if (ApiResponse.data.user.posts.nodes.length === 0) {
+		throw new Error("No post found");
 	}
 
 	return ApiResponse.data.user.posts.nodes;
