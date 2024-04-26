@@ -29710,7 +29710,7 @@ async function run() {
 			COUNT,
 			BLOG_URL,
 			USE_CANONICAL_URL.toLowerCase() === "true",
-			USE_CUSTOM_BLOG_URL.toLowerCase === "true"
+			USE_CUSTOM_BLOG_URL.toLowerCase() === "true"
 		);
 		let output = "";
 
