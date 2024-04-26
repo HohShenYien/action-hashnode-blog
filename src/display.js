@@ -7,7 +7,7 @@ function blog_table(posts, style) {
 	let html = "<table><tr>";
 
 	posts.forEach((post, index) => {
-		const { url, title, brief, coverImage, dateUpdated, dateAdded } = post;
+		const { url, title, brief, coverImage, updatedAt, publishedAt } = post;
 
 		if (0 !== index && index % column === 0) {
 			html += "</tr><tr>";
@@ -15,12 +15,10 @@ function blog_table(posts, style) {
 
 		html += `<td>${helpers.img(coverImage.url, url, title, "", "")}
 ${helpers.a(url, title, `<strong>${title}</strong>`)}
-<div><strong>${helpers.parseDate(dateAdded)}</strong>${
-			dateUpdated === null
+<div><strong>${helpers.parseDate(publishedAt)}</strong>${
+			updatedAt === null
 				? ""
-				: ` | <strong>Updated: ${helpers.parseDate(
-						dateUpdated
-				  )}</strong>`
+				: ` | <strong>Updated: ${helpers.parseDate(updatedAt)}</strong>`
 		}</div>
 <br/> ${brief}</td>`;
 	});
@@ -59,17 +57,17 @@ async function blog(posts, STYLE) {
 	}
 
 	posts.forEach((post) => {
-		const { url, title, brief, coverImage, dateUpdated, dateAdded } = post;
+		const { url, title, brief, coverImage, updatedAt, publishedAt } = post;
 
 		switch (STYLE) {
 			case "blog":
 				markdown.push(`<h3>${helpers.a(url, title, title)}</h3>
 ${helpers.img(coverImage.url, url, title, "", "400px")}
-<div><strong>${helpers.parseDate(dateAdded)}</strong>${
-					dateUpdated === null
+<div><strong>${helpers.parseDate(publishedAt)}</strong>${
+					updatedAt === null
 						? ""
 						: ` | <strong>Updated: ${helpers.parseDate(
-								dateUpdated
+								updatedAt
 						  )}</strong>`
 				}</div>
 <p>${brief}</p>`);
@@ -80,7 +78,7 @@ ${helpers.img(coverImage.url, url, title, "", "400px")}
 				markdown.push(`<p>
 ${helpers.img(coverImage.url, url, title, align, "150px")}
 ${helpers.a(url, title, `<strong>${title}</strong>`)}
-<br><strong>${helpers.parseDate(dateAdded)}</strong></p><br>`);
+<br><strong>${helpers.parseDate(publishedAt)}</strong></p><br>`);
 				if (isalternate) {
 					STYLE = "blog-left" === STYLE ? "blog-right" : "blog-left";
 				}
