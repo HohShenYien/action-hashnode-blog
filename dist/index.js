@@ -27531,7 +27531,7 @@ function blog_table(posts, style) {
 	let html = "<table><tr>";
 
 	posts.forEach((post, index) => {
-		const { url, title, brief, coverImage, dateUpdated, dateAdded } = post;
+		const { url, title, brief, coverImage, updatedAt, publishedAt } = post;
 
 		if (0 !== index && index % column === 0) {
 			html += "</tr><tr>";
@@ -27539,12 +27539,10 @@ function blog_table(posts, style) {
 
 		html += `<td>${helpers.img(coverImage.url, url, title, "", "")}
 ${helpers.a(url, title, `<strong>${title}</strong>`)}
-<div><strong>${helpers.parseDate(dateAdded)}</strong>${
-			dateUpdated === null
+<div><strong>${helpers.parseDate(publishedAt)}</strong>${
+			updatedAt === null
 				? ""
-				: ` | <strong>Updated: ${helpers.parseDate(
-						dateUpdated
-				  )}</strong>`
+				: ` | <strong>Updated: ${helpers.parseDate(updatedAt)}</strong>`
 		}</div>
 <br/> ${brief}</td>`;
 	});
@@ -27583,17 +27581,17 @@ async function blog(posts, STYLE) {
 	}
 
 	posts.forEach((post) => {
-		const { url, title, brief, coverImage, dateUpdated, dateAdded } = post;
+		const { url, title, brief, coverImage, updatedAt, publishedAt } = post;
 
 		switch (STYLE) {
 			case "blog":
 				markdown.push(`<h3>${helpers.a(url, title, title)}</h3>
 ${helpers.img(coverImage.url, url, title, "", "400px")}
-<div><strong>${helpers.parseDate(dateAdded)}</strong>${
-					dateUpdated === null
+<div><strong>${helpers.parseDate(publishedAt)}</strong>${
+					updatedAt === null
 						? ""
 						: ` | <strong>Updated: ${helpers.parseDate(
-								dateUpdated
+								updatedAt
 						  )}</strong>`
 				}</div>
 <p>${brief}</p>`);
@@ -27604,7 +27602,7 @@ ${helpers.img(coverImage.url, url, title, "", "400px")}
 				markdown.push(`<p>
 ${helpers.img(coverImage.url, url, title, align, "150px")}
 ${helpers.a(url, title, `<strong>${title}</strong>`)}
-<br><strong>${helpers.parseDate(dateAdded)}</strong></p><br>`);
+<br><strong>${helpers.parseDate(publishedAt)}</strong></p><br>`);
 				if (isalternate) {
 					STYLE = "blog-left" === STYLE ? "blog-right" : "blog-left";
 				}
@@ -27734,10 +27732,12 @@ query {
 		body: JSON.stringify({ query }),
 	});
 	const ApiResponse = await result.json();
-	console.log(ApiResponse);
+	if (ApiResponse.data.user === null) {
+		throw new Error("User not found");
+	}
 
 	if (ApiResponse.data.user.posts.nodes.length === 0) {
-		return false;
+		throw new Error("No post found");
 	}
 
 	return ApiResponse.data.user.posts.nodes;
@@ -29699,18 +29699,18 @@ async function run() {
 		core.info(`Hashnode Username        = ${USERNAME}`);
 		core.info(`Output Style             = ${STYLE}`);
 		core.info(`No Of Posts To Display   = ${COUNT}`);
-		core.info(`Use canonical URL		= ${USE_CANONICAL_URL}`);
-		core.info(`Use Custom Blog URL		= ${USE_CUSTOM_BLOG_URL}`);
+		core.info(`Use canonical URL        = ${USE_CANONICAL_URL}`);
+		core.info(`Use Custom Blog URL      = ${USE_CUSTOM_BLOG_URL}`);
 		core.info(`Blog URL                 = ${BLOG_URL}`);
 		core.info("Using Shen Yien's customized version");
 		core.endGroup();
 
 		const results = await query(
-			USERNAME.toLowerCase(),
+			USERNAME,
 			COUNT,
 			BLOG_URL,
 			USE_CANONICAL_URL.toLowerCase() === "true",
-			USE_CUSTOM_BLOG_URL.toLowerCase() === "true"
+			USE_CUSTOM_BLOG_URL.toLowerCase === "true"
 		);
 		let output = "";
 
